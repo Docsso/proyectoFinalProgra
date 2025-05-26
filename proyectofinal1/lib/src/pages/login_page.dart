@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import '../database/local_db.dart';
-import 'home_page.dart'; // ← crearemos esta luego
+import 'menu_page.dart'; // ✅ usamos el menú directamente
 
 class LoginPage extends StatefulWidget {
   const LoginPage({super.key});
@@ -64,7 +64,7 @@ class _LoginPageState extends State<LoginPage> {
                   padding: const EdgeInsets.symmetric(horizontal: 50, vertical: 15),
                 ),
                 onPressed: () async {
-                  FocusScope.of(context).unfocus(); // Cierra teclado
+                  FocusScope.of(context).unfocus();
 
                   if (_formKey.currentState!.validate()) {
                     final user = await LocalDatabase.getUserByEmail(emailController.text);
@@ -77,12 +77,10 @@ class _LoginPageState extends State<LoginPage> {
                         const SnackBar(content: Text('Contraseña incorrecta')),
                       );
                     } else {
-                      // Login exitoso
-                      Navigator.pushReplacement(
+                      Navigator.pushAndRemoveUntil(
                         context,
-                        MaterialPageRoute(
-                          builder: (context) => HomePage(userName: user['name']),
-                        ),
+                        MaterialPageRoute(builder: (context) => const MenuPage()),
+                        (route) => false,
                       );
                     }
                   }

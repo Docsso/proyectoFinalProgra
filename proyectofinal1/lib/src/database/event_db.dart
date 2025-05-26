@@ -7,7 +7,7 @@ class EventDB {
     final path = join(await getDatabasesPath(), 'rumbago.db');
     return openDatabase(
       path,
-      version: 3, // 🔄 Incrementamos la versión para aplicar cambios en tabla
+      version: 3, // ✅ asegúrate de haber desinstalado versiones anteriores si estás en pruebas
       onCreate: (db, version) async {
         await db.execute('''
           CREATE TABLE events (
@@ -22,13 +22,6 @@ class EventDB {
             userEmail TEXT
           )
         ''');
-      },
-      onUpgrade: (db, oldVersion, newVersion) async {
-        if (oldVersion < 3) {
-          await db.execute('''
-            ALTER TABLE events ADD COLUMN userEmail TEXT
-          ''');
-        }
       },
     );
   }

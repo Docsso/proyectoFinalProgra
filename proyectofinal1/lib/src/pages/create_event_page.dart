@@ -1,12 +1,10 @@
-// ... tus imports existentes
+import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
-import 'dart:io';
 import 'package:geolocator/geolocator.dart';
 import 'package:permission_handler/permission_handler.dart';
-
-import '../database/event_model.dart';
 import '../database/event_db.dart';
+import '../database/event_model.dart';
 
 class CreateEventPage extends StatefulWidget {
   const CreateEventPage({super.key});
@@ -27,18 +25,35 @@ class _CreateEventPageState extends State<CreateEventPage> {
   double? _longitude;
 
   Future<void> _pickImage() async {
-    final pickedFile = await ImagePicker().pickImage(source: ImageSource.gallery);
-    if (pickedFile != null) {
-      setState(() {
-        _selectedImage = File(pickedFile.path);
-      });
+    final permission = await Permission.photos.request();
+
+    if (permission.isGranted) {
+      final pickedFile = await ImagePicker().pickImage(source: ImageSource.gallery);
+      if (pickedFile != null) {
+        setState(() {
+          _selectedImage = File(pickedFile.path);
+        });
+      }
+    } else {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('Permiso de galería denegado')),
+      );
     }
   }
 
   Future<void> _getCurrentLocation() async {
-    final permission = await Permission.location.request();
+    final locationPermission = await Permission.location.request();
 
-    if (permission == PermissionStatus.granted) {
+    if (locationPermission.isGranted) {
+      final isLocationEnabled = await Geolocator.isLocationServiceEnabled();
+      if (!isLocationEnabled) {
+        await Geolocator.openLocationSettings();
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(content: Text('Activa la ubicación y vuelve a intentarlo')),
+        );
+        return;
+      }
+
       final position = await Geolocator.getCurrentPosition(
         desiredAccuracy: LocationAccuracy.high,
       );
@@ -91,10 +106,7 @@ class _CreateEventPageState extends State<CreateEventPage> {
                     borderRadius: BorderRadius.circular(12),
                   ),
                   child: const Center(
-                    child: Text(
-                      'Sin imagen seleccionada',
-                      style: TextStyle(color: Colors.black54),
-                    ),
+                    child: Text('Sin imagen seleccionada'),
                   ),
                 ),
               const SizedBox(height: 12),
@@ -158,12 +170,10 @@ class _CreateEventPageState extends State<CreateEventPage> {
               const SizedBox(height: 30),
               ElevatedButton(
                 onPressed: () async {
-                  FocusScope.of(context).unfocus();
-
                   if (_formKey.currentState!.validate()) {
                     if (_latitude == null || _longitude == null) {
                       ScaffoldMessenger.of(context).showSnackBar(
-                        const SnackBar(content: Text('Primero selecciona tu ubicación')),
+                        const SnackBar(content: Text('Selecciona una ubicación')),
                       );
                       return;
                     }
@@ -176,7 +186,7 @@ class _CreateEventPageState extends State<CreateEventPage> {
                       imagePath: _selectedImage?.path ?? '',
                       latitude: _latitude!,
                       longitude: _longitude!,
-                      userEmail: 'demo@rumba.com', // ✅ Por ahora se usa estático
+                      userEmail: 'demo@rumbago.com',
                     );
 
                     try {
@@ -187,15 +197,14 @@ class _CreateEventPageState extends State<CreateEventPage> {
                       Navigator.pop(context);
                     } catch (e) {
                       ScaffoldMessenger.of(context).showSnackBar(
-                        SnackBar(content: Text('Error al guardar: $e')),
+                        const SnackBar(content: Text('Error al guardar el evento')),
                       );
                     }
                   }
                 },
                 style: ElevatedButton.styleFrom(
                   backgroundColor: Colors.green[700],
-                  padding: const EdgeInsets.symmetric(
-                      horizontal: 50, vertical: 15),
+                  padding: const EdgeInsets.symmetric(horizontal: 50, vertical: 15),
                 ),
                 child: const Text(
                   'Crear evento',
@@ -209,4 +218,3 @@ class _CreateEventPageState extends State<CreateEventPage> {
     );
   }
 }
-

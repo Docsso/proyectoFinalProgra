@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'menu_page.dart'; // ✅ Reemplaza option_page.dart por menu_page.dart
+import 'option_page.dart'; 
 
 class WelcomePage extends StatelessWidget {
   const WelcomePage({super.key});
@@ -44,7 +45,7 @@ class WelcomePage extends StatelessWidget {
                 onPressed: () {
                   Navigator.pushReplacement(
                     context,
-                    MaterialPageRoute(builder: (context) => const MenuPage()),
+                    MaterialPageRoute(builder: (context) => const OptionPage()),
                   );
                 },
                 child: const Text(
