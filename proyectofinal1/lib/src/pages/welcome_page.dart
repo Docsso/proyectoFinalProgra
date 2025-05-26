@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
-// ignore: unused_import
-import 'option_page.dart'; // Esta será la siguiente pantalla
+import 'menu_page.dart'; // ✅ Reemplaza option_page.dart por menu_page.dart
 
 class WelcomePage extends StatelessWidget {
   const WelcomePage({super.key});
@@ -8,7 +7,7 @@ class WelcomePage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: const Color(0xFF1C0033), // púrpura oscuro
+      backgroundColor: const Color(0xFF1C0033),
       body: SafeArea(
         child: Center(
           child: Column(
@@ -39,16 +38,15 @@ class WelcomePage extends StatelessWidget {
               const SizedBox(height: 40),
               ElevatedButton(
                 style: ElevatedButton.styleFrom(
-                  backgroundColor: Color(0xFFFF6F00), // naranja
+                  backgroundColor: const Color(0xFFFF6F00), // naranja
                   padding: const EdgeInsets.symmetric(horizontal: 60, vertical: 15),
                 ),
                 onPressed: () {
-  Navigator.push(
-    context,
-    MaterialPageRoute(builder: (context) => const OptionPage()),
-  );
-},
-
+                  Navigator.pushReplacement(
+                    context,
+                    MaterialPageRoute(builder: (context) => const MenuPage()),
+                  );
+                },
                 child: const Text(
                   'VAMOS',
                   style: TextStyle(fontSize: 16),
@@ -61,4 +59,3 @@ class WelcomePage extends StatelessWidget {
     );
   }
 }
-

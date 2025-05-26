@@ -53,4 +53,15 @@ class LocalDatabase {
       return null;
     }
   }
+
+  // ✅ NUEVO: Actualizar contraseña del usuario
+  static Future<void> updateUserPassword(String email, String newPassword) async {
+    final db = await database;
+    await db.update(
+      'users',
+      {'password': newPassword},
+      where: 'email = ?',
+      whereArgs: [email],
+    );
+  }
 }
