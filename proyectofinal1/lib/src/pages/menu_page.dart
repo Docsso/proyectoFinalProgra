@@ -3,6 +3,7 @@ import 'create_event_page.dart';
 import 'event_list_page.dart';
 import 'welcome_page.dart';
 import 'change_password_page.dart'; // ✅ Correcta ubicación
+import 'my_events_page.dart';
 
 class MenuPage extends StatefulWidget {
   const MenuPage({super.key});
@@ -24,7 +25,7 @@ class _MenuPageState extends State<MenuPage> {
   Widget build(BuildContext context) {
     final List<Widget> pages = [
       _HomeView(),
-      const EventListPage(),
+      const MyEventsPage(),
       const _SettingsView(),
     ];
 

@@ -6,6 +6,7 @@ import 'package:permission_handler/permission_handler.dart';
 import '../database/event_db.dart';
 import '../database/event_model.dart';
 
+
 class CreateEventPage extends StatefulWidget {
   const CreateEventPage({super.key});
 
@@ -26,7 +27,6 @@ class _CreateEventPageState extends State<CreateEventPage> {
 
   Future<void> _pickImage() async {
     final permission = await Permission.photos.request();
-
     if (permission.isGranted) {
       final pickedFile = await ImagePicker().pickImage(source: ImageSource.gallery);
       if (pickedFile != null) {
@@ -49,7 +49,7 @@ class _CreateEventPageState extends State<CreateEventPage> {
       if (!isLocationEnabled) {
         await Geolocator.openLocationSettings();
         ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(content: Text('Activa la ubicación y vuelve a intentarlo')),
+          const SnackBar(content: Text('Activa la ubicación en el sistema')),
         );
         return;
       }
@@ -64,11 +64,52 @@ class _CreateEventPageState extends State<CreateEventPage> {
       });
 
       ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('Ubicación guardada: ($_latitude, $_longitude)')),
+        SnackBar(content: Text('Ubicación: ($_latitude, $_longitude)')),
       );
     } else {
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(content: Text('Permiso de ubicación denegado')),
+      );
+    }
+  }
+
+  Future<void> _crearEvento() async {
+    if (!_formKey.currentState!.validate()) return;
+
+    if (_selectedImage == null) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('Selecciona una imagen para el evento')),
+      );
+      return;
+    }
+
+    if (_latitude == null || _longitude == null) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('Selecciona la ubicación del evento')),
+      );
+      return;
+    }
+
+    final newEvent = EventModel(
+      name: nameController.text.trim(),
+      topic: topicController.text.trim(),
+      date: dateController.text.trim(),
+      description: descriptionController.text.trim(),
+      imagePath: _selectedImage!.path,
+      latitude: _latitude!,
+      longitude: _longitude!,
+      userEmail: 'demo@rumbago.com', // 👈 asegurado
+    );
+
+    try {
+      await EventDB.insertEvent(newEvent);
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('Evento creado con éxito')),
+      );
+      Navigator.pop(context);
+    } catch (e) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text('Error al guardar: $e')),
       );
     }
   }
@@ -105,27 +146,21 @@ class _CreateEventPageState extends State<CreateEventPage> {
                     color: Colors.grey[300],
                     borderRadius: BorderRadius.circular(12),
                   ),
-                  child: const Center(
-                    child: Text('Sin imagen seleccionada'),
-                  ),
+                  child: const Center(child: Text('Sin imagen seleccionada')),
                 ),
               const SizedBox(height: 12),
               ElevatedButton.icon(
                 onPressed: _pickImage,
                 icon: const Icon(Icons.image),
                 label: const Text('Seleccionar imagen'),
-                style: ElevatedButton.styleFrom(
-                  backgroundColor: const Color(0xFF003366),
-                ),
+                style: ElevatedButton.styleFrom(backgroundColor: const Color(0xFF003366)),
               ),
               const SizedBox(height: 20),
               ElevatedButton.icon(
                 onPressed: _getCurrentLocation,
                 icon: const Icon(Icons.location_on),
                 label: const Text('Usar mi ubicación actual'),
-                style: ElevatedButton.styleFrom(
-                  backgroundColor: const Color(0xFF003366),
-                ),
+                style: ElevatedButton.styleFrom(backgroundColor: const Color(0xFF003366)),
               ),
               const SizedBox(height: 20),
               TextFormField(
@@ -134,8 +169,7 @@ class _CreateEventPageState extends State<CreateEventPage> {
                   labelText: 'Nombre del evento',
                   border: OutlineInputBorder(),
                 ),
-                validator: (value) =>
-                    value!.isEmpty ? 'Campo requerido' : null,
+                validator: (value) => value == null || value.isEmpty ? 'Campo requerido' : null,
               ),
               const SizedBox(height: 16),
               TextFormField(
@@ -144,19 +178,17 @@ class _CreateEventPageState extends State<CreateEventPage> {
                   labelText: 'Temática',
                   border: OutlineInputBorder(),
                 ),
-                validator: (value) =>
-                    value!.isEmpty ? 'Campo requerido' : null,
+                validator: (value) => value == null || value.isEmpty ? 'Campo requerido' : null,
               ),
               const SizedBox(height: 16),
               TextFormField(
                 controller: dateController,
                 decoration: const InputDecoration(
                   labelText: 'Fecha',
-                  hintText: 'Ej: 10/12/2025',
+                  hintText: 'Ej: 12/01/2025',
                   border: OutlineInputBorder(),
                 ),
-                validator: (value) =>
-                    value!.isEmpty ? 'Campo requerido' : null,
+                validator: (value) => value == null || value.isEmpty ? 'Campo requerido' : null,
               ),
               const SizedBox(height: 16),
               TextFormField(
@@ -169,39 +201,7 @@ class _CreateEventPageState extends State<CreateEventPage> {
               ),
               const SizedBox(height: 30),
               ElevatedButton(
-                onPressed: () async {
-                  if (_formKey.currentState!.validate()) {
-                    if (_latitude == null || _longitude == null) {
-                      ScaffoldMessenger.of(context).showSnackBar(
-                        const SnackBar(content: Text('Selecciona una ubicación')),
-                      );
-                      return;
-                    }
-
-                    final newEvent = EventModel(
-                      name: nameController.text,
-                      topic: topicController.text,
-                      date: dateController.text,
-                      description: descriptionController.text,
-                      imagePath: _selectedImage?.path ?? '',
-                      latitude: _latitude!,
-                      longitude: _longitude!,
-                      userEmail: 'demo@rumbago.com',
-                    );
-
-                    try {
-                      await EventDB.insertEvent(newEvent);
-                      ScaffoldMessenger.of(context).showSnackBar(
-                        const SnackBar(content: Text('Evento creado con éxito')),
-                      );
-                      Navigator.pop(context);
-                    } catch (e) {
-                      ScaffoldMessenger.of(context).showSnackBar(
-                        const SnackBar(content: Text('Error al guardar el evento')),
-                      );
-                    }
-                  }
-                },
+                onPressed: _crearEvento,
                 style: ElevatedButton.styleFrom(
                   backgroundColor: Colors.green[700],
                   padding: const EdgeInsets.symmetric(horizontal: 50, vertical: 15),
