@@ -3,10 +3,10 @@ import 'package:path/path.dart';
 
 class LocalDatabase {
   static Database? _db;
+  static String? _activeEmail; // ✅ Usuario activo en memoria
 
   static Future<Database> get database async {
     if (_db != null) return _db!;
-
     _db = await initDB();
     return _db!;
   }
@@ -47,14 +47,9 @@ class LocalDatabase {
   static Future<Map<String, dynamic>?> getUserByEmail(String email) async {
     final db = await database;
     final res = await db.query('users', where: 'email = ?', whereArgs: [email]);
-    if (res.isNotEmpty) {
-      return res.first;
-    } else {
-      return null;
-    }
+    return res.isNotEmpty ? res.first : null;
   }
 
-  // ✅ NUEVO: Actualizar contraseña del usuario
   static Future<void> updateUserPassword(String email, String newPassword) async {
     final db = await database;
     await db.update(
@@ -64,4 +59,17 @@ class LocalDatabase {
       whereArgs: [email],
     );
   }
+
+  /// ✅ Guardar usuario activo
+  static void setActiveUser(String email) {
+    _activeEmail = email;
+  }
+
+  /// ✅ Cerrar sesión
+  static void clearActiveUser() {
+    _activeEmail = null;
+  }
+
+  /// ✅ Obtener usuario activo
+  static String? get activeUserEmail => _activeEmail;
 }

@@ -1,9 +1,31 @@
 import 'package:flutter/material.dart';
-import 'menu_page.dart'; // ✅ Reemplaza option_page.dart por menu_page.dart
-import 'option_page.dart'; 
+import 'package:permission_handler/permission_handler.dart';
+import 'option_page.dart';
 
-class WelcomePage extends StatelessWidget {
+class WelcomePage extends StatefulWidget {
   const WelcomePage({super.key});
+
+  @override
+  State<WelcomePage> createState() => _WelcomePageState();
+}
+
+class _WelcomePageState extends State<WelcomePage> {
+  @override
+  void initState() {
+    super.initState();
+    pedirPermisos();
+  }
+
+  Future<void> pedirPermisos() async {
+    final fotos = await Permission.photos.request();
+    final ubicacion = await Permission.locationWhenInUse.request();
+
+    if (fotos.isGranted && ubicacion.isGranted) {
+      print('✅ Todos los permisos concedidos');
+    } else {
+      print('❌ Permisos denegados');
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -39,7 +61,7 @@ class WelcomePage extends StatelessWidget {
               const SizedBox(height: 40),
               ElevatedButton(
                 style: ElevatedButton.styleFrom(
-                  backgroundColor: const Color(0xFFFF6F00), // naranja
+                  backgroundColor: const Color(0xFFFF6F00),
                   padding: const EdgeInsets.symmetric(horizontal: 60, vertical: 15),
                 ),
                 onPressed: () {
