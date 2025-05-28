@@ -95,7 +95,7 @@ class _RegisterPageState extends State<RegisterPage> {
                   padding: const EdgeInsets.symmetric(horizontal: 50, vertical: 15),
                 ),
                 onPressed: () async {
-                  FocusScope.of(context).unfocus(); // Cierra teclado
+                  FocusScope.of(context).unfocus();
 
                   if (_formKey.currentState!.validate()) {
                     try {
@@ -110,10 +110,15 @@ class _RegisterPageState extends State<RegisterPage> {
                           emailController.text,
                           passwordController.text,
                         );
+
+                        // ✅ Guardamos como usuario activo
+                        LocalDatabase.setActiveUser(emailController.text);
+
                         ScaffoldMessenger.of(context).showSnackBar(
                           const SnackBar(content: Text('Usuario registrado correctamente')),
                         );
-                        Navigator.pop(context); // volver a OptionPage
+
+                        Navigator.pop(context); // volver a OptionPage o Menu
                       }
                     } catch (e) {
                       ScaffoldMessenger.of(context).showSnackBar(
@@ -134,4 +139,3 @@ class _RegisterPageState extends State<RegisterPage> {
     );
   }
 }
-

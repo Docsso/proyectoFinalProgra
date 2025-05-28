@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
-import 'src/pages/welcome_page.dart'; // Pantalla inicial con botón "VAMOS"
+import 'src/pages/welcome_page.dart';
+import 'src/database/local_db.dart';
 
-void main() {
+void main() async {
+  WidgetsFlutterBinding.ensureInitialized();
   runApp(const RumbaGolApp());
 }
 
@@ -15,9 +17,9 @@ class RumbaGolApp extends StatelessWidget {
       title: 'Rumba-Gol!',
       theme: ThemeData(
         primarySwatch: Colors.deepPurple,
-        scaffoldBackgroundColor: const Color(0xFFF1F8FF), // Fondo base
+        scaffoldBackgroundColor: const Color(0xFFF1F8FF),
       ),
-      home: const WelcomePage(), // ✅ Aquí inicia la app
+      home: const WelcomePage(), // ✅ Siempre carga esta pantalla primero
     );
   }
 }

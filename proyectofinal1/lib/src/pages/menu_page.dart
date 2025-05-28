@@ -2,8 +2,9 @@ import 'package:flutter/material.dart';
 import 'create_event_page.dart';
 import 'event_list_page.dart';
 import 'welcome_page.dart';
-import 'change_password_page.dart'; // ✅ Correcta ubicación
+import 'change_password_page.dart';// ✅ Correcta ubicación
 import 'my_events_page.dart';
+import 'profile_page.dart';
 
 class MenuPage extends StatefulWidget {
   const MenuPage({super.key});
@@ -98,7 +99,7 @@ class _HomeView extends StatelessWidget {
               Navigator.pushAndRemoveUntil(
                 context,
                 MaterialPageRoute(builder: (context) => const WelcomePage()),
-                (route) => false,
+                    (route) => false,
               );
             },
             style: ElevatedButton.styleFrom(
@@ -115,7 +116,6 @@ class _HomeView extends StatelessWidget {
   }
 }
 
-// ⚙️ AJUSTES
 class _SettingsView extends StatelessWidget {
   const _SettingsView();
 
@@ -126,39 +126,67 @@ class _SettingsView extends StatelessWidget {
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
-          ElevatedButton.icon(
-            icon: const Icon(Icons.lock_reset),
-            label: const Text('Cambiar contraseña'),
-            onPressed: () {
-              Navigator.push(
-                context,
-                MaterialPageRoute(builder: (context) => const ChangePasswordPage()),
-              );
-            },
-            style: ElevatedButton.styleFrom(
-              backgroundColor: const Color(0xFF003366),
-              padding: const EdgeInsets.symmetric(horizontal: 30, vertical: 14),
-              shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(12),
+          // 🧑‍🦱 PERFIL
+          SizedBox(
+            width: double.infinity,
+            child: ElevatedButton.icon(
+              icon: const Icon(Icons.person),
+              label: const Text('Perfil'),
+              onPressed: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (context) => const ProfilePage()),
+                );
+              },
+              style: ElevatedButton.styleFrom(
+                backgroundColor: const Color(0xFF003366),
+                padding: const EdgeInsets.symmetric(horizontal: 30, vertical: 16),
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(12),
+                ),
+                textStyle: const TextStyle(fontSize: 16),
               ),
             ),
           ),
           const SizedBox(height: 20),
-          ElevatedButton.icon(
-            icon: const Icon(Icons.logout),
-            label: const Text('Cerrar sesión'),
-            onPressed: () {
-              Navigator.pushAndRemoveUntil(
-                context,
-                MaterialPageRoute(builder: (context) => const WelcomePage()),
-                (route) => false,
-              );
-            },
-            style: ElevatedButton.styleFrom(
-              backgroundColor: Colors.red,
-              padding: const EdgeInsets.symmetric(horizontal: 30, vertical: 14),
-              shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(12),
+
+          // 🔒 CAMBIAR CONTRASEÑA
+          SizedBox(
+            width: double.infinity,
+            child: ElevatedButton.icon(
+              icon: const Icon(Icons.lock_reset),
+              label: const Text('Cambiar contraseña'),
+              onPressed: () {
+                Navigator.pushNamed(context, '/change-password');
+              },
+              style: ElevatedButton.styleFrom(
+                backgroundColor: const Color(0xFF003366),
+                padding: const EdgeInsets.symmetric(horizontal: 30, vertical: 16),
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(12),
+                ),
+                textStyle: const TextStyle(fontSize: 16),
+              ),
+            ),
+          ),
+          const SizedBox(height: 20),
+
+          // 🚪 CERRAR SESIÓN
+          SizedBox(
+            width: double.infinity,
+            child: ElevatedButton.icon(
+              icon: const Icon(Icons.logout),
+              label: const Text('Cerrar sesión'),
+              onPressed: () {
+                Navigator.pushNamedAndRemoveUntil(context, '/welcome', (_) => false);
+              },
+              style: ElevatedButton.styleFrom(
+                backgroundColor: Colors.red,
+                padding: const EdgeInsets.symmetric(horizontal: 30, vertical: 16),
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(12),
+                ),
+                textStyle: const TextStyle(fontSize: 16),
               ),
             ),
           ),
@@ -167,7 +195,6 @@ class _SettingsView extends StatelessWidget {
     );
   }
 }
-
 // Reutilizable
 class _MenuButton extends StatelessWidget {
   final IconData icon;
