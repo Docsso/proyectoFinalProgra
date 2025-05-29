@@ -45,5 +45,11 @@
 	<true/>
 	<key>UIApplicationSupportsIndirectInputEvents</key>
 	<true/>
+
+	<!-- PERMISOS PARA ACCESO A GALERÍA Y UBICACIÓN -->
+	<key>NSPhotoLibraryUsageDescription</key>
+	<string>Esta app necesita acceso a la galería para seleccionar imágenes.</string>
+	<key>NSLocationWhenInUseUsageDescription</key>
+	<string>Esta app necesita acceder a tu ubicación actual.</string>
 </dict>
 </plist>
