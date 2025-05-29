@@ -1,31 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:permission_handler/permission_handler.dart';
-import 'option_page.dart';
+import 'option_page.dart'; // ✅ Navega a login/registro o perfil según sesión
 
-class WelcomePage extends StatefulWidget {
+class WelcomePage extends StatelessWidget {
   const WelcomePage({super.key});
-
-  @override
-  State<WelcomePage> createState() => _WelcomePageState();
-}
-
-class _WelcomePageState extends State<WelcomePage> {
-  @override
-  void initState() {
-    super.initState();
-    pedirPermisos();
-  }
-
-  Future<void> pedirPermisos() async {
-    final fotos = await Permission.photos.request();
-    final ubicacion = await Permission.locationWhenInUse.request();
-
-    if (fotos.isGranted && ubicacion.isGranted) {
-      print('✅ Todos los permisos concedidos');
-    } else {
-      print('❌ Permisos denegados');
-    }
-  }
 
   @override
   Widget build(BuildContext context) {
@@ -61,7 +38,7 @@ class _WelcomePageState extends State<WelcomePage> {
               const SizedBox(height: 40),
               ElevatedButton(
                 style: ElevatedButton.styleFrom(
-                  backgroundColor: const Color(0xFFFF6F00),
+                  backgroundColor: const Color(0xFFFF6F00), // naranja
                   padding: const EdgeInsets.symmetric(horizontal: 60, vertical: 15),
                 ),
                 onPressed: () {

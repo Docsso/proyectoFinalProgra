@@ -77,10 +77,13 @@ class _LoginPageState extends State<LoginPage> {
                         const SnackBar(content: Text('Contraseña incorrecta')),
                       );
                     } else {
+                      // ✅ Login exitoso
+                      LocalDatabase.setActiveUser(emailController.text); // 👈 Aquí lo agregas
+
                       Navigator.pushAndRemoveUntil(
                         context,
                         MaterialPageRoute(builder: (context) => const MenuPage()),
-                        (route) => false,
+                            (route) => false,
                       );
                     }
                   }
