@@ -36,8 +36,8 @@ class _EventListPageState extends State<EventListPage> {
       desiredAccuracy: LocationAccuracy.high,
     );
 
-    // 🔁 Solo obtener eventos del usuario actual
-    final loadedEvents = await EventDB.getEventsByUser('demo@rumba.com');
+    // 🔄 Mostrar todos los eventos (para ver también el evento de bienvenida)
+    final loadedEvents = await EventDB.getAllEvents();
 
     setState(() {
       userPosition = position;
@@ -52,8 +52,7 @@ class _EventListPageState extends State<EventListPage> {
           userPosition!.longitude,
           lat,
           lon,
-        ) /
-        1000; // convert to kilometers
+        ) / 1000; // convert to kilometers
   }
 
   @override
@@ -61,11 +60,11 @@ class _EventListPageState extends State<EventListPage> {
     return Scaffold(
       backgroundColor: const Color(0xFFF1F8FF),
       appBar: AppBar(
-        title: const Text('Mis eventos cercanos'),
+        title: const Text('Eventos cerca de ti'),
         backgroundColor: const Color(0xFF003366),
       ),
       body: events.isEmpty
-          ? const Center(child: Text('No tienes eventos publicados aún'))
+          ? const Center(child: Text('No hay eventos disponibles cerca de ti'))
           : ListView.builder(
               itemCount: events.length,
               padding: const EdgeInsets.all(16),

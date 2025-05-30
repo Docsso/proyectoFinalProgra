@@ -4,6 +4,9 @@ import 'package:path/path.dart';
 class LocalDatabase {
   static Database? _db;
 
+  /// ✅ Variable para guardar el correo del usuario activo
+  static String? activeUserEmail;
+
   static Future<Database> get database async {
     if (_db != null) return _db!;
 
@@ -19,12 +22,28 @@ class LocalDatabase {
       path,
       version: 1,
       onCreate: (db, version) async {
+        // Tabla de usuarios
         await db.execute('''
           CREATE TABLE users (
             id INTEGER PRIMARY KEY AUTOINCREMENT,
             name TEXT,
             email TEXT UNIQUE,
             password TEXT
+          )
+        ''');
+
+        // ✅ Tabla de eventos
+        await db.execute('''
+          CREATE TABLE events (
+            id INTEGER PRIMARY KEY AUTOINCREMENT,
+            name TEXT,
+            topic TEXT,
+            date TEXT,
+            description TEXT,
+            imagePath TEXT,
+            latitude REAL,
+            longitude REAL,
+            userEmail TEXT
           )
         ''');
       },
@@ -54,7 +73,6 @@ class LocalDatabase {
     }
   }
 
-  // ✅ NUEVO: Actualizar contraseña del usuario
   static Future<void> updateUserPassword(String email, String newPassword) async {
     final db = await database;
     await db.update(

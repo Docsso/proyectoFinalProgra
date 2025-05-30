@@ -7,7 +7,7 @@ class EventDB {
     final path = join(await getDatabasesPath(), 'rumbago.db');
     return openDatabase(
       path,
-      version: 3, // ✅ asegúrate de haber desinstalado versiones anteriores si estás en pruebas
+      version: 3,
       onCreate: (db, version) async {
         await db.execute('''
           CREATE TABLE events (
@@ -64,5 +64,30 @@ class EventDB {
       where: 'id = ?',
       whereArgs: [id],
     );
+  }
+
+  /// ✅ Inserta un evento predeterminado si no existe aún para este usuario
+  static Future<void> insertDefaultWelcomeEvent(String userEmail) async {
+    final db = await _openDB();
+    final res = await db.query(
+      'events',
+      where: 'userEmail = ? AND name = ?',
+      whereArgs: [userEmail, 'Evento de Bienvenida'],
+    );
+
+    if (res.isEmpty) {
+      final defaultEvent = EventModel(
+        name: 'Evento de Bienvenida',
+        topic: 'Conoce Rumba-Gol!',
+        date: '01/01/2025',
+        description: 'Este es un evento predeterminado para darte la bienvenida.',
+        imagePath: 'assets/images/logo.png',
+        latitude: 14.6349,
+        longitude: -90.5069,
+        userEmail: userEmail,
+      );
+
+      await insertEvent(defaultEvent);
+    }
   }
 }

@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import '../database/local_db.dart';
+import 'menu_page.dart';
 
 class RegisterPage extends StatefulWidget {
   const RegisterPage({super.key});
@@ -10,39 +11,33 @@ class RegisterPage extends StatefulWidget {
 
 class _RegisterPageState extends State<RegisterPage> {
   final _formKey = GlobalKey<FormState>();
-
-  final TextEditingController nameController = TextEditingController();
-  final TextEditingController emailController = TextEditingController();
-  final TextEditingController passwordController = TextEditingController();
-  final TextEditingController confirmPasswordController = TextEditingController();
+  final nameController = TextEditingController();
+  final emailController = TextEditingController();
+  final passwordController = TextEditingController();
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: const Color(0xFFF1F8FF),
       appBar: AppBar(
-        title: const Text("Registro"),
+        title: const Text("Registrarse"),
         backgroundColor: const Color(0xFF003366),
       ),
-      body: SingleChildScrollView(
+      body: Padding(
         padding: const EdgeInsets.all(24.0),
         child: Form(
           key: _formKey,
           child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              const SizedBox(height: 20),
               TextFormField(
                 controller: nameController,
                 decoration: const InputDecoration(
-                  labelText: 'Nombre completo',
+                  labelText: 'Nombre',
                   border: OutlineInputBorder(),
                 ),
-                validator: (value) {
-                  if (value == null || value.isEmpty) {
-                    return 'Por favor ingresa tu nombre';
-                  }
-                  return null;
-                },
+                validator: (value) =>
+                    value == null || value.isEmpty ? 'Campo requerido' : null,
               ),
               const SizedBox(height: 16),
               TextFormField(
@@ -51,12 +46,8 @@ class _RegisterPageState extends State<RegisterPage> {
                   labelText: 'Correo electrónico',
                   border: OutlineInputBorder(),
                 ),
-                validator: (value) {
-                  if (value == null || value.isEmpty || !value.contains('@')) {
-                    return 'Ingresa un correo válido';
-                  }
-                  return null;
-                },
+                validator: (value) =>
+                    value == null || !value.contains('@') ? 'Correo inválido' : null,
               ),
               const SizedBox(height: 16),
               TextFormField(
@@ -66,27 +57,8 @@ class _RegisterPageState extends State<RegisterPage> {
                   labelText: 'Contraseña',
                   border: OutlineInputBorder(),
                 ),
-                validator: (value) {
-                  if (value == null || value.length < 6) {
-                    return 'La contraseña debe tener al menos 6 caracteres';
-                  }
-                  return null;
-                },
-              ),
-              const SizedBox(height: 16),
-              TextFormField(
-                controller: confirmPasswordController,
-                obscureText: true,
-                decoration: const InputDecoration(
-                  labelText: 'Confirmar contraseña',
-                  border: OutlineInputBorder(),
-                ),
-                validator: (value) {
-                  if (value != passwordController.text) {
-                    return 'Las contraseñas no coinciden';
-                  }
-                  return null;
-                },
+                validator: (value) =>
+                    value == null || value.length < 6 ? 'Mínimo 6 caracteres' : null,
               ),
               const SizedBox(height: 30),
               ElevatedButton(
@@ -95,38 +67,27 @@ class _RegisterPageState extends State<RegisterPage> {
                   padding: const EdgeInsets.symmetric(horizontal: 50, vertical: 15),
                 ),
                 onPressed: () async {
-                  FocusScope.of(context).unfocus(); // Cierra teclado
-
                   if (_formKey.currentState!.validate()) {
-                    try {
-                      final existingUser = await LocalDatabase.getUserByEmail(emailController.text);
-                      if (existingUser != null) {
-                        ScaffoldMessenger.of(context).showSnackBar(
-                          const SnackBar(content: Text('Este correo ya está registrado')),
-                        );
-                      } else {
-                        await LocalDatabase.insertUser(
-                          nameController.text,
-                          emailController.text,
-                          passwordController.text,
-                        );
-                        ScaffoldMessenger.of(context).showSnackBar(
-                          const SnackBar(content: Text('Usuario registrado correctamente')),
-                        );
-                        Navigator.pop(context); // volver a OptionPage
-                      }
-                    } catch (e) {
-                      ScaffoldMessenger.of(context).showSnackBar(
-                        SnackBar(content: Text('Error al registrar: $e')),
-                      );
-                    }
+                    await LocalDatabase.insertUser(
+                      nameController.text,
+                      emailController.text,
+                      passwordController.text,
+                    );
+
+                    // ✅ IMPORTANTE: guardar usuario activo al registrarse
+                    LocalDatabase.activeUserEmail = emailController.text;
+
+                    if (!mounted) return;
+
+                    Navigator.pushAndRemoveUntil(
+                      context,
+                      MaterialPageRoute(builder: (_) => const MenuPage()),
+                      (route) => false,
+                    );
                   }
                 },
-                child: const Text(
-                  'Registrarse',
-                  style: TextStyle(fontSize: 16),
-                ),
-              )
+                child: const Text('Registrarse'),
+              ),
             ],
           ),
         ),
@@ -134,4 +95,4 @@ class _RegisterPageState extends State<RegisterPage> {
     );
   }
 }
-
+ 

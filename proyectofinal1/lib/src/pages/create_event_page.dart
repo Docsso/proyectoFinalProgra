@@ -5,7 +5,7 @@ import 'package:geolocator/geolocator.dart';
 import 'package:permission_handler/permission_handler.dart';
 import '../database/event_db.dart';
 import '../database/event_model.dart';
-
+import '../database/local_db.dart'; // ✅ Importar para obtener el correo del usuario activo
 
 class CreateEventPage extends StatefulWidget {
   const CreateEventPage({super.key});
@@ -90,6 +90,14 @@ class _CreateEventPageState extends State<CreateEventPage> {
       return;
     }
 
+    final userEmail = LocalDatabase.activeUserEmail;
+    if (userEmail == null) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('Usuario no identificado')),
+      );
+      return;
+    }
+
     final newEvent = EventModel(
       name: nameController.text.trim(),
       topic: topicController.text.trim(),
@@ -98,7 +106,7 @@ class _CreateEventPageState extends State<CreateEventPage> {
       imagePath: _selectedImage!.path,
       latitude: _latitude!,
       longitude: _longitude!,
-      userEmail: 'demo@rumbago.com', // 👈 asegurado
+      userEmail: userEmail, // ✅ Se guarda con el correo del usuario actual
     );
 
     try {

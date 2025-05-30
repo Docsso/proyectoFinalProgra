@@ -14,14 +14,19 @@ class _ChangePasswordPageState extends State<ChangePasswordPage> {
   final TextEditingController newPassController = TextEditingController();
   final TextEditingController confirmPassController = TextEditingController();
 
-  final String userEmail = 'demo@rumbago.com'; // Cuenta demo fija
-
   Future<void> _changePassword() async {
     final current = currentPassController.text.trim();
     final newPass = newPassController.text.trim();
     final confirm = confirmPassController.text.trim();
 
-    final user = await LocalDatabase.getUserByEmail(userEmail);
+    final email = LocalDatabase.activeUserEmail;
+
+    if (email == null) {
+      _showSnackBar('Usuario no identificado', isError: true);
+      return;
+    }
+
+    final user = await LocalDatabase.getUserByEmail(email);
 
     if (user == null) {
       _showSnackBar('Usuario no encontrado', isError: true);
@@ -43,7 +48,7 @@ class _ChangePasswordPageState extends State<ChangePasswordPage> {
       return;
     }
 
-    await LocalDatabase.updateUserPassword(userEmail, newPass);
+    await LocalDatabase.updateUserPassword(email, newPass);
     _showSnackBar('Contraseña actualizada correctamente');
     Navigator.pop(context);
   }

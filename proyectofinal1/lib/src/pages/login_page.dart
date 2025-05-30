@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import '../database/local_db.dart';
-import 'menu_page.dart'; // ✅ usamos el menú directamente
+import '../database/event_db.dart'; // ✅ Importamos EventDB
+import '../database/event_model.dart'; // ✅ Importamos EventModel
+import 'menu_page.dart';
 
 class LoginPage extends StatefulWidget {
   const LoginPage({super.key});
@@ -13,6 +15,25 @@ class _LoginPageState extends State<LoginPage> {
   final _formKey = GlobalKey<FormState>();
   final emailController = TextEditingController();
   final passwordController = TextEditingController();
+
+  Future<void> _insertDefaultEventIfNeeded(String userEmail) async {
+    final existingEvents = await EventDB.getEventsByUser(userEmail);
+    final alreadyExists = existingEvents.any((e) => e.name == 'Evento de Bienvenida');
+
+    if (!alreadyExists) {
+      final defaultEvent = EventModel(
+        name: 'Evento de Bienvenida',
+        topic: 'Conoce Rumba-Gol!',
+        date: '01/01/2025',
+        description: 'Este es un evento predeterminado para darte la bienvenida.',
+        imagePath: 'assets/images/logo.png',
+        latitude: 14.6349,
+        longitude: -90.5069,
+        userEmail: userEmail,
+      );
+      await EventDB.insertEvent(defaultEvent);
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -77,6 +98,9 @@ class _LoginPageState extends State<LoginPage> {
                         const SnackBar(content: Text('Contraseña incorrecta')),
                       );
                     } else {
+                      LocalDatabase.activeUserEmail = user['email'];
+                      await _insertDefaultEventIfNeeded(user['email']);
+
                       Navigator.pushAndRemoveUntil(
                         context,
                         MaterialPageRoute(builder: (context) => const MenuPage()),

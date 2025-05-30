@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
 import '../database/event_db.dart';
 import '../database/event_model.dart';
-import 'my_event_detail_page.dart'; // ✅ importa la vista de detalles
+import '../database/local_db.dart'; // ✅ Importa para acceder al correo activo
+import 'my_event_detail_page.dart';
 
 class MyEventsPage extends StatefulWidget {
   const MyEventsPage({super.key});
@@ -20,11 +21,18 @@ class _MyEventsPageState extends State<MyEventsPage> {
   }
 
   Future<void> _loadMyEvents() async {
-    const currentUserEmail = 'demo@rumbago.com';
-    final userEvents = await EventDB.getEventsByUser(currentUserEmail);
-    setState(() {
-      events = userEvents;
-    });
+    final currentUserEmail = LocalDatabase.activeUserEmail;
+
+    if (currentUserEmail != null) {
+      final userEvents = await EventDB.getEventsByUser(currentUserEmail);
+      setState(() {
+        events = userEvents;
+      });
+    } else {
+      setState(() {
+        events = [];
+      });
+    }
   }
 
   @override
