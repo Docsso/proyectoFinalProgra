@@ -10,24 +10,22 @@ class ChangePasswordPage extends StatefulWidget {
 
 class _ChangePasswordPageState extends State<ChangePasswordPage> {
   final _formKey = GlobalKey<FormState>();
-  final TextEditingController currentPassController = TextEditingController();
-  final TextEditingController newPassController = TextEditingController();
-  final TextEditingController confirmPassController = TextEditingController();
+  final currentPassController = TextEditingController();
+  final newPassController = TextEditingController();
+  final confirmPassController = TextEditingController();
 
   Future<void> _changePassword() async {
     final current = currentPassController.text.trim();
     final newPass = newPassController.text.trim();
     final confirm = confirmPassController.text.trim();
-
     final email = LocalDatabase.activeUserEmail;
 
     if (email == null) {
-      _showSnackBar('Usuario no identificado', isError: true);
+      _showSnackBar('Usuario no detectado', isError: true);
       return;
     }
 
     final user = await LocalDatabase.getUserByEmail(email);
-
     if (user == null) {
       _showSnackBar('Usuario no encontrado', isError: true);
       return;

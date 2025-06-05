@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
-import 'menu_page.dart'; // ✅ Reemplaza option_page.dart por menu_page.dart
-import 'option_page.dart'; 
+import 'option_page.dart'; // ✅ Navega a login/registro o perfil según sesión
 
 class WelcomePage extends StatelessWidget {
   const WelcomePage({super.key});

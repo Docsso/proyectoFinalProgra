@@ -3,8 +3,8 @@ import 'create_event_page.dart';
 import 'event_list_page.dart';
 import 'welcome_page.dart';
 import 'change_password_page.dart';
-import 'my_events_page.dart';
 import 'profile_page.dart';
+import 'my_events_page.dart';
 
 class MenuPage extends StatefulWidget {
   const MenuPage({super.key});
@@ -40,25 +40,15 @@ class _MenuPageState extends State<MenuPage> {
         currentIndex: _selectedIndex,
         onTap: _onTabTapped,
         items: const [
-          BottomNavigationBarItem(
-            icon: Icon(Icons.home),
-            label: 'Inicio',
-          ),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.menu_book),
-            label: 'Mis eventos',
-          ),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.settings),
-            label: 'Ajustes',
-          ),
+          BottomNavigationBarItem(icon: Icon(Icons.home), label: 'Inicio'),
+          BottomNavigationBarItem(icon: Icon(Icons.menu_book), label: 'Mis eventos'),
+          BottomNavigationBarItem(icon: Icon(Icons.settings), label: 'Ajustes'),
         ],
       ),
     );
   }
 }
 
-// 🏠 INICIO
 class _HomeView extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
@@ -71,10 +61,7 @@ class _HomeView extends StatelessWidget {
             icon: Icons.event,
             label: 'Organizar evento',
             onPressed: () {
-              Navigator.push(
-                context,
-                MaterialPageRoute(builder: (context) => const CreateEventPage()),
-              );
+              Navigator.push(context, MaterialPageRoute(builder: (context) => const CreateEventPage()));
             },
           ),
           const SizedBox(height: 20),
@@ -82,33 +69,8 @@ class _HomeView extends StatelessWidget {
             icon: Icons.directions_walk,
             label: 'Cerca de ti',
             onPressed: () {
-              Navigator.push(
-                context,
-                MaterialPageRoute(builder: (context) => const EventListPage()),
-              );
+              Navigator.push(context, MaterialPageRoute(builder: (context) => const EventListPage()));
             },
-          ),
-          const SizedBox(height: 40),
-          ElevatedButton.icon(
-            icon: const Icon(Icons.logout, color: Colors.white),
-            label: const Text(
-              'Cerrar sesión',
-              style: TextStyle(color: Colors.white),
-            ),
-            onPressed: () {
-              Navigator.pushAndRemoveUntil(
-                context,
-                MaterialPageRoute(builder: (context) => const WelcomePage()),
-                (route) => false,
-              );
-            },
-            style: ElevatedButton.styleFrom(
-              backgroundColor: Colors.red,
-              padding: const EdgeInsets.symmetric(horizontal: 30, vertical: 14),
-              shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(12),
-              ),
-            ),
           ),
         ],
       ),
@@ -116,7 +78,6 @@ class _HomeView extends StatelessWidget {
   }
 }
 
-// ⚙️ AJUSTES
 class _SettingsView extends StatelessWidget {
   const _SettingsView();
 
@@ -129,73 +90,46 @@ class _SettingsView extends StatelessWidget {
           mainAxisAlignment: MainAxisAlignment.center,
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
-            SizedBox(
-              height: 70,
-              child: ElevatedButton.icon(
-                icon: const Icon(Icons.person, color: Colors.white, size: 28),
-                label: const Text(
-                  'Perfil',
-                  style: TextStyle(fontSize: 20, color: Colors.white),
-                ),
-                onPressed: () {
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(builder: (_) => const ProfilePage()),
-                  );
-                },
-                style: ElevatedButton.styleFrom(
-                  backgroundColor: const Color(0xFF003366),
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(16),
-                  ),
-                ),
+            ElevatedButton.icon(
+              icon: const Icon(Icons.person, color: Colors.white, size: 28),
+              label: const Text('Perfil', style: TextStyle(fontSize: 20, color: Colors.white)),
+              onPressed: () {
+                Navigator.push(context, MaterialPageRoute(builder: (_) => const ProfilePage()));
+              },
+              style: ElevatedButton.styleFrom(
+                backgroundColor: const Color(0xFF524FA1),
+                minimumSize: const Size(double.infinity, 65),
+                shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
               ),
             ),
             const SizedBox(height: 24),
-            SizedBox(
-              height: 70,
-              child: ElevatedButton.icon(
-                icon: const Icon(Icons.lock_reset, color: Colors.white, size: 28),
-                label: const Text(
-                  'Cambiar contraseña',
-                  style: TextStyle(fontSize: 20, color: Colors.white),
-                ),
-                onPressed: () {
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(builder: (context) => const ChangePasswordPage()),
-                  );
-                },
-                style: ElevatedButton.styleFrom(
-                  backgroundColor: const Color(0xFF003366),
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(16),
-                  ),
-                ),
+            ElevatedButton.icon(
+              icon: const Icon(Icons.lock_reset, color: Colors.white, size: 28),
+              label: const Text('Cambiar contraseña', style: TextStyle(fontSize: 20, color: Colors.white)),
+              onPressed: () {
+                Navigator.push(context, MaterialPageRoute(builder: (_) => const ChangePasswordPage()));
+              },
+              style: ElevatedButton.styleFrom(
+                backgroundColor: const Color(0xFF003366),
+                minimumSize: const Size(double.infinity, 65),
+                shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
               ),
             ),
             const SizedBox(height: 24),
-            SizedBox(
-              height: 70,
-              child: ElevatedButton.icon(
-                icon: const Icon(Icons.logout, color: Colors.white, size: 28),
-                label: const Text(
-                  'Cerrar sesión',
-                  style: TextStyle(fontSize: 20, color: Colors.white),
-                ),
-                onPressed: () {
-                  Navigator.pushAndRemoveUntil(
-                    context,
-                    MaterialPageRoute(builder: (_) => const WelcomePage()),
-                    (route) => false,
-                  );
-                },
-                style: ElevatedButton.styleFrom(
-                  backgroundColor: Colors.redAccent,
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(16),
-                  ),
-                ),
+            ElevatedButton.icon(
+              icon: const Icon(Icons.logout, color: Colors.white, size: 28),
+              label: const Text('Cerrar sesión', style: TextStyle(fontSize: 20, color: Colors.white)),
+              onPressed: () {
+                Navigator.pushAndRemoveUntil(
+                  context,
+                  MaterialPageRoute(builder: (_) => const WelcomePage()),
+                  (route) => false,
+                );
+              },
+              style: ElevatedButton.styleFrom(
+                backgroundColor: Colors.redAccent,
+                minimumSize: const Size(double.infinity, 65),
+                shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
               ),
             ),
           ],
@@ -205,7 +139,6 @@ class _SettingsView extends StatelessWidget {
   }
 }
 
-// Reutilizable
 class _MenuButton extends StatelessWidget {
   final IconData icon;
   final String label;
@@ -227,19 +160,13 @@ class _MenuButton extends StatelessWidget {
           padding: const EdgeInsets.symmetric(vertical: 12.0),
           child: Text(
             label,
-            style: const TextStyle(
-              fontSize: 18,
-              color: Colors.white,
-              fontWeight: FontWeight.w600,
-            ),
+            style: const TextStyle(fontSize: 18, color: Colors.white, fontWeight: FontWeight.w600),
           ),
         ),
         onPressed: onPressed,
         style: ElevatedButton.styleFrom(
           backgroundColor: const Color(0xFF003366),
-          shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(12),
-          ),
+          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
         ),
       ),
     );

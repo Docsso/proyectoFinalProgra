@@ -13,7 +13,7 @@ class ProfilePage extends StatefulWidget {
 class _ProfilePageState extends State<ProfilePage> {
   String? userName;
   String? userEmail;
-  File? profileImage;
+  String? userPhotoPath;
 
   @override
   void initState() {
@@ -38,7 +38,7 @@ class _ProfilePageState extends State<ProfilePage> {
     final pickedFile = await picker.pickImage(source: ImageSource.gallery);
     if (pickedFile != null) {
       setState(() {
-        profileImage = File(pickedFile.path);
+        userPhotoPath = pickedFile.path;
       });
     }
   }
@@ -57,8 +57,8 @@ class _ProfilePageState extends State<ProfilePage> {
           children: [
             CircleAvatar(
               radius: 60,
-              backgroundImage: profileImage != null
-                  ? FileImage(profileImage!)
+              backgroundImage: userPhotoPath != null
+                  ? FileImage(File(userPhotoPath!))
                   : const AssetImage('assets/images/logo.png') as ImageProvider,
             ),
             const SizedBox(height: 12),
@@ -66,21 +66,14 @@ class _ProfilePageState extends State<ProfilePage> {
               onPressed: _pickImage,
               style: ElevatedButton.styleFrom(
                 backgroundColor: const Color(0xFF003366),
+                shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
               ),
-              child: const Text('Cambiar foto de perfil', style: TextStyle(color: Colors.white)),
+              child: const Text('Editar foto', style: TextStyle(color: Colors.white)),
             ),
-            const SizedBox(height: 20),
-            if (userName != null)
-              Text(
-                userName!,
-                style: const TextStyle(fontSize: 22, fontWeight: FontWeight.bold),
-              ),
-            const SizedBox(height: 8),
-            if (userEmail != null)
-              Text(
-                userEmail!,
-                style: const TextStyle(fontSize: 18, color: Colors.grey),
-              ),
+            const SizedBox(height: 16),
+            Text(userName ?? '', style: const TextStyle(fontSize: 22, fontWeight: FontWeight.bold)),
+            const SizedBox(height: 6),
+            Text(userEmail ?? '', style: const TextStyle(fontSize: 16, color: Colors.grey)),
           ],
         ),
       ),
